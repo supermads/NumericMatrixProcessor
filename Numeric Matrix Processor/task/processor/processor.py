@@ -1,3 +1,10 @@
+def print_menu():
+    print("1. Add matrices")
+    print("2. Multiply matrix by a constant")
+    print("3. Multiply matrices")
+    print("0. Exit")
+
+
 def add_matrices():
     A = []
     B = []
@@ -10,12 +17,9 @@ def add_matrices():
     for i in range(0, bn):
         B.append(input().split())
     if an == bn and am == bm:
-        C = [[float(A[n][m]) + float(B[n][m]) for m in range(len(A[0]))] for n in range(len(A))]
-        print("The result is:")
-        for i in range(0, len(C)):
-            print(" ".join(map(str, C[i])))
+        return [[float(A[n][m]) + float(B[n][m]) for m in range(len(A[0]))] for n in range(len(A))]
     else:
-        print("The operation cannot be performed.")
+        return []
         
 
 def multiply_matrix_by_constant():
@@ -25,10 +29,7 @@ def multiply_matrix_by_constant():
     for i in range(0, int(an)):
         A.append(input().split())
     scalar = float(input("Enter constant: "))
-    C = [[float(A[n][m]) * scalar for m in range(len(A[0]))] for n in range(len(A))]
-    print("The result is:")
-    for i in range(0, len(C)):
-        print(" ".join(map(str, C[i])))
+    return [[float(A[n][m]) * scalar for m in range(len(A[0]))] for n in range(len(A))]
 
 
 def multiply_matrices():
@@ -50,18 +51,31 @@ def multiply_matrices():
                 for x in range(am):
                     acc += float(A[n][x]) * float(B[x][m])
                 C[n][m] = acc
-        print("The result is:")
-        for i in range(0, len(C)):
-            print(" ".join(map(str, C[i])))
+        return C
     else:
-        print("The operation cannot be performed")
+        return []
 
 
-def print_menu():
-    print("1. Add matrices")
-    print("2. Multiply matrix by a constant")
-    print("3. Multiply matrices")
-    print("0. Exit")
+def transpose_matrix():
+    print("1. Main diagonal")
+    print("2. Side diagonal")
+    print("3. Vertical line")
+    print("4. Horizontal line")
+    t = int(input())
+    print("Your choice: {}".format(t))
+    an, am = map(int, input("Enter matrix size: ").split())
+    a = []
+    print("Enter matrix: ")
+    for i in range(0, an):
+        a.append(list(map(float, input().split())))
+    if t == 1:
+        return [[a[m][n] for m in range(len(a[0]))] for n in range(len(a))]
+    elif t == 2:
+        return [[a[am - 1 - m][an - 1 - n] for m in range(len(a[0]))] for n in range(len(a))]
+    elif t == 3:
+        return [[a[n][am - 1 - m] for m in range(len(a[0]))] for n in range(len(a))]
+    else:
+        return [[a[an - 1 - n][m] for m in range(len(a[0]))] for n in range(len(a))]
 
 
 def main():
@@ -69,11 +83,19 @@ def main():
     choice = int(input("Your choice: "))
     while choice != 0:
         if choice == 1:
-            add_matrices()
+            C = add_matrices()
         elif choice == 2:
-            multiply_matrix_by_constant()
+            C = multiply_matrix_by_constant()
         elif choice == 3:
-            multiply_matrices()
+            C = multiply_matrices()
+        elif choice == 4:
+            C = transpose_matrix()
+        if C:
+            print("The result is:")
+            for i in range(0, len(C)):
+                print(" ".join(map(str, C[i])))
+        else:
+            print("The operation cannot be performed.")
         print_menu()
         choice = int(input("Your choice: "))
 

@@ -2,56 +2,56 @@ def print_menu():
     print("1. Add matrices")
     print("2. Multiply matrix by a constant")
     print("3. Multiply matrices")
+    print("4. Transpose matrix")
+    print("5. Calculate a determinant")
     print("0. Exit")
 
 
-def add_matrices():
-    A = []
-    B = []
-    an, am = map(int, input("Enter size of first matrix: ").split())
-    print("Enter first matrix: ")
-    for i in range(0, an):
-        A.append(input().split())
-    bn, bm = map(int, input("Enter size of second matrix: ").split())
-    print("Enter second matrix: ")
-    for i in range(0, bn):
-        B.append(input().split())
-    if an == bn and am == bm:
-        return [[float(A[n][m]) + float(B[n][m]) for m in range(len(A[0]))] for n in range(len(A))]
-    else:
-        return []
-        
-
-def multiply_matrix_by_constant():
-    A = []
-    an, am = input("Enter size of matrix: ").split()
+def get_one_matrix():
+    a = []
+    an, am = map(int, input("Enter size of matrix: ").split())
     print("Enter matrix:")
     for i in range(0, int(an)):
-        A.append(input().split())
-    scalar = float(input("Enter constant: "))
-    return [[float(A[n][m]) * scalar for m in range(len(A[0]))] for n in range(len(A))]
+        a.append(list(map(float, input().split())))
+    return a, an, am
 
 
-def multiply_matrices():
-    A = []
-    B = []
+def get_two_matrices():
+    a = []
+    b = []
     an, am = map(int, input("Enter size of first matrix: ").split())
     print("Enter first matrix: ")
     for i in range(0, an):
-        A.append(input().split())
+        a.append(list(map(float, input().split())))
     bn, bm = map(int, input("Enter size of second matrix: ").split())
     print("Enter second matrix: ")
     for i in range(0, bn):
-        B.append(input().split())
+        b.append(list(map(float, input().split())))
+    return a, an, am, b, bn, bm
+
+
+def add_matrices(a, an, am, b, bn, bm):
+    if an == bn and am == bm:
+        return [[float(a[n][m]) + float(b[n][m]) for m in range(len(a[0]))] for n in range(len(a))]
+    else:
+        return []
+
+
+def multiply_matrix_by_constant(a):
+    scalar = float(input("Enter constant: "))
+    return [[a[n][m] * scalar for m in range(len(a[0]))] for n in range(len(a))]
+
+
+def multiply_matrices(a, an, am, b, bn, bm):
     if am == bn:
-        C = [[0 for _i in range (bm)] for _j in range(an)]
+        c = [[0 for _i in range(bm)] for _j in range(an)]
         for n in range(an):
             for m in range(bm):
                 acc = 0
                 for x in range(am):
-                    acc += float(A[n][x]) * float(B[x][m])
-                C[n][m] = acc
-        return C
+                    acc += float(a[n][x]) * float(b[x][m])
+                c[n][m] = acc
+        return c
     else:
         return []
 
@@ -63,11 +63,7 @@ def transpose_matrix():
     print("4. Horizontal line")
     t = int(input())
     print("Your choice: {}".format(t))
-    an, am = map(int, input("Enter matrix size: ").split())
-    a = []
-    print("Enter matrix: ")
-    for i in range(0, an):
-        a.append(list(map(float, input().split())))
+    a, an, am = get_one_matrix()
     if t == 1:
         return [[a[m][n] for m in range(len(a[0]))] for n in range(len(a))]
     elif t == 2:
@@ -78,22 +74,38 @@ def transpose_matrix():
         return [[a[an - 1 - n][m] for m in range(len(a[0]))] for n in range(len(a))]
 
 
+def find_determinant(a, an, am):
+    d = 0
+    if an == 1:
+        d = a[0][0]
+    elif an == 2:
+        d = (a[0][0] * a[1][1]) - (a[0][1] * a[1][0])
+    else:
+        for i in range(am):
+            cofactor = a[0][i] * pow(-1, i)
+            d += cofactor * find_determinant([[a[n][m] for n in range(1, an)] for m in range(am) if m != i], an - 1, am - 1)
+    return d
+
+
 def main():
     print_menu()
     choice = int(input("Your choice: "))
     while choice != 0:
         if choice == 1:
-            C = add_matrices()
+            c = add_matrices(*get_two_matrices())
         elif choice == 2:
-            C = multiply_matrix_by_constant()
+            c = multiply_matrix_by_constant(get_one_matrix()[0])
         elif choice == 3:
-            C = multiply_matrices()
+            c = multiply_matrices(*get_two_matrices())
         elif choice == 4:
-            C = transpose_matrix()
-        if C:
+            c = transpose_matrix()
+        if choice == 5:
             print("The result is:")
-            for i in range(0, len(C)):
-                print(" ".join(map(str, C[i])))
+            print(find_determinant(*get_one_matrix()))
+        elif c:
+            print("The result is:")
+            for i in range(0, len(c)):
+                print(" ".join(map(str, c[i])))
         else:
             print("The operation cannot be performed.")
         print_menu()

@@ -577,11 +577,9 @@ files:
         CalcTest("processor.processor").run_tests()
   learner_created: false
 feedback_link: https://hyperskill.org/projects/96/stages/533/implement
-status: Failed
+status: Solved
 feedback:
-  message: |-
-    Wrong answer in test #1
-
-    Probably, error in the matrix adding algorithm
-  time: Tue, 24 Nov 2020 18:28:12 UTC
+  message: Congratulations! Continue on <a href="https://hyperskill.org/projects/96/stages/533/implement">JetBrains
+    Academy</a>
+  time: Thu, 17 Dec 2020 01:14:19 UTC
 record: 6

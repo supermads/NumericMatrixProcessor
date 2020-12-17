@@ -4,6 +4,7 @@ def print_menu():
     print("3. Multiply matrices")
     print("4. Transpose matrix")
     print("5. Calculate a determinant")
+    print("6. Inverse Matrix")
     print("0. Exit")
 
 
@@ -37,8 +38,9 @@ def add_matrices(a, an, am, b, bn, bm):
         return []
 
 
-def multiply_matrix_by_constant(a):
-    scalar = float(input("Enter constant: "))
+def multiply_matrix_by_constant(a, scalar = 0):
+    if not scalar:
+        scalar = float(input("Enter constant: "))
     return [[a[n][m] * scalar for m in range(len(a[0]))] for n in range(len(a))]
 
 
@@ -56,19 +58,20 @@ def multiply_matrices(a, an, am, b, bn, bm):
         return []
 
 
-def transpose_matrix():
-    print("1. Main diagonal")
-    print("2. Side diagonal")
-    print("3. Vertical line")
-    print("4. Horizontal line")
-    t = int(input())
-    print("Your choice: {}".format(t))
-    a, an, am = get_one_matrix()
-    if t == 1:
+def transpose_matrix(choice = 0, a = [], an = 0, am = 0):
+    if not choice:
+        print("1. Main diagonal")
+        print("2. Side diagonal")
+        print("3. Vertical line")
+        print("4. Horizontal line")
+        choice = int(input())
+        print("Your choice: {}".format(choice))
+        a, an, am = get_one_matrix()
+    if choice == 1:
         return [[a[m][n] for m in range(len(a[0]))] for n in range(len(a))]
-    elif t == 2:
+    elif choice == 2:
         return [[a[am - 1 - m][an - 1 - n] for m in range(len(a[0]))] for n in range(len(a))]
-    elif t == 3:
+    elif choice == 3:
         return [[a[n][am - 1 - m] for m in range(len(a[0]))] for n in range(len(a))]
     else:
         return [[a[an - 1 - n][m] for m in range(len(a[0]))] for n in range(len(a))]
@@ -87,6 +90,26 @@ def find_determinant(a, an, am):
     return d
 
 
+def find_inverse():
+    a, an, am = get_one_matrix()
+    d = find_determinant(a, an, am)
+    if d == 0:
+        print("This matrix doesn't have an inverse.")
+        return []
+    c = [[0 for i in range (am)] for j in range(an)]
+    for j in range(an):
+        if j % 2 == 0:
+            i = 0
+        else:
+            i = 1
+        for k in range(am):
+            minor = find_determinant([[a[n][m] for n in range(an) if n != j] for m in range(am) if m != k], an - 1, am - 1)
+            c[j][k] = (-1) ** i * minor
+            i += 1
+    ct = transpose_matrix(1, c, an, am)
+    return multiply_matrix_by_constant(ct, 1 / d)
+
+
 def main():
     print_menu()
     choice = int(input("Your choice: "))
@@ -99,6 +122,8 @@ def main():
             c = multiply_matrices(*get_two_matrices())
         elif choice == 4:
             c = transpose_matrix()
+        elif choice == 6:
+            c = find_inverse()
         if choice == 5:
             print("The result is:")
             print(find_determinant(*get_one_matrix()))
@@ -106,11 +131,10 @@ def main():
             print("The result is:")
             for i in range(0, len(c)):
                 print(" ".join(map(str, c[i])))
-        else:
+        elif choice != 6:
             print("The operation cannot be performed.")
         print_menu()
         choice = int(input("Your choice: "))
-
 
 
 main()
